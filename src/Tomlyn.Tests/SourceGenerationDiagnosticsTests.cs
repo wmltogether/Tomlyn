@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json.Serialization;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using NUnit.Framework;
@@ -91,24 +91,6 @@ public sealed class SourceGenerationDiagnosticsTests
     }
 
     [Test]
-    public void Generator_WarnsForJsonSerializableUsage()
-    {
-        var source = """
-            #nullable enable
-            using System.Text.Json.Serialization;
-            using Tomlyn.Serialization;
-
-            [JsonSerializable(typeof(Person))]
-            internal partial class Ctx : TomlSerializerContext { }
-
-            public sealed class Person { public string Name { get; set; } = ""; }
-            """;
-
-        var diagnostics = RunGenerator(source);
-        Assert.That(diagnostics.Any(d => d.Id == "TOMLYN008"), Is.True);
-    }
-
-    [Test]
     public void Generator_ReportsInvalidTypeInfoPropertyName()
     {
         var source = """
@@ -130,7 +112,7 @@ public sealed class SourceGenerationDiagnosticsTests
     {
         var source = """
             #nullable enable
-            using System.Text.Json.Serialization;
+
             using Tomlyn.Serialization;
 
             public sealed class InitOptions
@@ -252,7 +234,7 @@ public sealed class SourceGenerationDiagnosticsTests
         Add(typeof(object).Assembly.Location);
         Add(typeof(Enumerable).Assembly.Location);
         Add(typeof(List<>).Assembly.Location);
-        Add(typeof(JsonSerializableAttribute).Assembly.Location);
+        Add(typeof(TomlSerializableAttribute).Assembly.Location);
         Add(typeof(TomlSerializerContext).Assembly.Location);
 
         return references;

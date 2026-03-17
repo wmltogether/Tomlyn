@@ -64,7 +64,7 @@ Use [`TomlSourceGenerationOptionsAttribute`](xref:Tomlyn.Serialization.TomlSourc
 
 ```csharp
 using System.Text.Json;
-using System.Text.Json.Serialization;
+
 using Tomlyn;
 using Tomlyn.Serialization;
 

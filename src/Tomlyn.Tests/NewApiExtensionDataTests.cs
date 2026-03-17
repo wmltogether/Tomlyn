@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 using NUnit.Framework;
+using Tomlyn.Serialization;
 
 namespace Tomlyn.Tests;
 
@@ -10,7 +10,7 @@ public sealed class NewApiExtensionDataTests
     {
         public int Known { get; set; }
 
-        [JsonExtensionData]
+        [TomlExtensionData]
         public Dictionary<string, object?> Extra { get; set; } = new();
     }
 
@@ -18,7 +18,7 @@ public sealed class NewApiExtensionDataTests
     {
         public int Known { get; set; }
 
-        [JsonExtensionData]
+        [TomlExtensionData]
         public Dictionary<string, object?>? Extra { get; set; }
     }
 

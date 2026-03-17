@@ -225,7 +225,7 @@ so you can reuse models across JSON and TOML. When both are present, the TOML-sp
 ### Example: property naming
 
 ```csharp
-using System.Text.Json.Serialization;
+
 
 public sealed class Person
 {
@@ -263,7 +263,7 @@ Source-generated contexts also honor the C# `required` keyword and `init` access
 ### Example: constructor-based deserialization
 
 ```csharp
-using System.Text.Json.Serialization;
+
 
 public sealed class Endpoint
 {
@@ -421,7 +421,7 @@ Breed = "Labrador"
 `JsonPolymorphicAttribute` and `JsonDerivedTypeAttribute` also work:
 
 ```csharp
-using System.Text.Json.Serialization;
+
 
 [JsonPolymorphic]
 [JsonDerivedType(typeof(Cat), "cat")]

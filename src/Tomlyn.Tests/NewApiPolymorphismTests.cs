@@ -1,5 +1,5 @@
 using System;
-using System.Text.Json.Serialization;
+
 using NUnit.Framework;
 using Tomlyn.Serialization;
 
@@ -103,33 +103,6 @@ public class NewApiPolymorphismTests
         var result = TomlSerializer.Deserialize<Pet>(toml, options);
         Assert.That(result, Is.TypeOf<Pet>());
         Assert.That(result!.Name, Is.EqualTo("Base"));
-    }
-
-    [JsonPolymorphic(TypeDiscriminatorPropertyName = "kind")]
-    [JsonDerivedType(typeof(JsonCat), "cat")]
-    private abstract class JsonAnimal
-    {
-        public string? Name { get; set; }
-    }
-
-    private sealed class JsonCat : JsonAnimal
-    {
-        public int Lives { get; set; }
-    }
-
-    [Test]
-    public void Deserialize_Polymorphic_RespectsSystemTextJsonAttributes()
-    {
-        var toml =
-            """
-            kind = "cat"
-            Name = "Ada"
-            Lives = 9
-            """;
-
-        var result = TomlSerializer.Deserialize<JsonAnimal>(toml);
-        Assert.That(result, Is.TypeOf<JsonCat>());
-        Assert.That(((JsonCat)result!).Lives, Is.EqualTo(9));
     }
 
     // --- Feature 1: Default Derived Type (no discriminator) ---
@@ -255,52 +228,6 @@ public class NewApiPolymorphismTests
         Assert.That(square.Side, Is.EqualTo(3.0));
     }
 
-    // Default derived type with JsonDerivedType (no discriminator is 1-arg constructor)
-    [JsonPolymorphic(TypeDiscriminatorPropertyName = "kind")]
-    [JsonDerivedType(typeof(JsonDefaultCircle))]
-    [JsonDerivedType(typeof(JsonDefaultSquare), "square")]
-    private abstract class JsonDefaultShape
-    {
-        public string? Color { get; set; }
-    }
-
-    private sealed class JsonDefaultCircle : JsonDefaultShape
-    {
-        public double Radius { get; set; }
-    }
-
-    private sealed class JsonDefaultSquare : JsonDefaultShape
-    {
-        public double Side { get; set; }
-    }
-
-    [Test]
-    public void Serialize_JsonDefaultDerivedType_OmitsDiscriminator()
-    {
-        JsonDefaultShape value = new JsonDefaultCircle { Color = "red", Radius = 5.0 };
-        var toml = TomlSerializer.Serialize(value);
-
-        Assert.That(toml, Does.Not.Contain("kind"));
-        Assert.That(toml, Does.Contain("Color"));
-        Assert.That(toml, Does.Contain("Radius"));
-    }
-
-    [Test]
-    public void Deserialize_JsonDefaultDerivedType_WhenMissingDiscriminator()
-    {
-        var toml =
-            """
-            Color = "red"
-            Radius = 5.0
-            """;
-
-        var result = TomlSerializer.Deserialize<JsonDefaultShape>(toml);
-
-        Assert.That(result, Is.TypeOf<JsonDefaultCircle>());
-        Assert.That(((JsonDefaultCircle)result!).Color, Is.EqualTo("red"));
-        Assert.That(((JsonDefaultCircle)result).Radius, Is.EqualTo(5.0));
-    }
-
     // --- Feature 2: UnknownDerivedTypeHandling on attribute ---
 
     [TomlPolymorphic(TypeDiscriminatorPropertyName = "kind", UnknownDerivedTypeHandling = TomlUnknownDerivedTypeHandling.FallBackToBaseType)]
@@ -388,37 +315,9 @@ public class NewApiPolymorphismTests
         Assert.Throws<TomlException>(() => TomlSerializer.Deserialize<AttrFailBase>(toml, options));
     }
 
-    // Test: JsonPolymorphic attribute sets FallBackToBaseType
-    [JsonPolymorphic(TypeDiscriminatorPropertyName = "kind", UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToBaseType)]
-    [JsonDerivedType(typeof(JsonAttrFallbackDerived), "derived")]
-    private class JsonAttrFallbackBase
-    {
-        public string? Name { get; set; }
-    }
-
-    private sealed class JsonAttrFallbackDerived : JsonAttrFallbackBase
-    {
-        public int Extra { get; set; }
-    }
-
-    [Test]
-    public void Deserialize_UnknownDiscriminator_JsonAttributeFallback()
-    {
-        var toml =
-            """
-            kind = "unknown"
-            Name = "test"
-            """;
-
-        var result = TomlSerializer.Deserialize<JsonAttrFallbackBase>(toml);
-
-        Assert.That(result, Is.TypeOf<JsonAttrFallbackBase>());
-        Assert.That(result!.Name, Is.EqualTo("test"));
-    }
 
     // Test: TomlPolymorphic overrides JsonPolymorphic when both present
     [TomlPolymorphic(TypeDiscriminatorPropertyName = "kind", UnknownDerivedTypeHandling = TomlUnknownDerivedTypeHandling.Fail)]
-    [JsonPolymorphic(TypeDiscriminatorPropertyName = "kind", UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToBaseType)]
     [TomlDerivedType(typeof(TomlOverridesJsonDerived), "derived")]
     private class TomlOverridesJsonBase
     {
@@ -515,39 +414,5 @@ public class NewApiPolymorphismTests
         var square = (IntDiscrimSquare)result!;
         Assert.That(square.Color, Is.EqualTo("blue"));
         Assert.That(square.Side, Is.EqualTo(3.0));
-    }
-
-    // JsonDerivedType int discriminators (already supported at runtime)
-    [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-    [JsonDerivedType(typeof(JsonIntDiscrimCircle), 1)]
-    [JsonDerivedType(typeof(JsonIntDiscrimSquare), 2)]
-    private abstract class JsonIntDiscrimShape
-    {
-        public string? Color { get; set; }
-    }
-
-    private sealed class JsonIntDiscrimCircle : JsonIntDiscrimShape
-    {
-        public double Radius { get; set; }
-    }
-
-    private sealed class JsonIntDiscrimSquare : JsonIntDiscrimShape
-    {
-        public double Side { get; set; }
-    }
-
-    [Test]
-    public void Roundtrip_JsonIntDiscriminator()
-    {
-        JsonIntDiscrimShape original = new JsonIntDiscrimCircle { Color = "red", Radius = 5.0 };
-        var toml = TomlSerializer.Serialize(original);
-
-        Assert.That(toml, Does.Contain("type = \"1\""));
-
-        var result = TomlSerializer.Deserialize<JsonIntDiscrimShape>(toml);
-
-        Assert.That(result, Is.TypeOf<JsonIntDiscrimCircle>());
-        Assert.That(((JsonIntDiscrimCircle)result!).Color, Is.EqualTo("red"));
-        Assert.That(((JsonIntDiscrimCircle)result).Radius, Is.EqualTo(5.0));
     }
 }

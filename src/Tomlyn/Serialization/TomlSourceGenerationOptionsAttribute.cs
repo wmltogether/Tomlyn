@@ -3,7 +3,7 @@
 // See license.txt file in the project root for full license information.
 
 using System;
-using System.Text.Json.Serialization;
+
 
 namespace Tomlyn.Serialization;
 
@@ -23,10 +23,10 @@ public sealed class TomlSourceGenerationOptionsAttribute : TomlAttribute
     public TomlNewLineKind NewLine { get; set; }
 
     /// <summary>Gets or sets the policy used to convert CLR property names.</summary>
-    public JsonKnownNamingPolicy PropertyNamingPolicy { get; set; }
+    public TomlKnownNamingPolicy PropertyNamingPolicy { get; set; }
 
     /// <summary>Gets or sets the policy used to convert dictionary keys during serialization.</summary>
-    public JsonKnownNamingPolicy DictionaryKeyPolicy { get; set; }
+    public TomlKnownNamingPolicy DictionaryKeyPolicy { get; set; }
 
     /// <summary>Gets or sets a value indicating whether property name matching is case-insensitive.</summary>
     public bool PropertyNameCaseInsensitive { get; set; }

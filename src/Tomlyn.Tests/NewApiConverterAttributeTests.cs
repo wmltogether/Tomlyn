@@ -1,5 +1,5 @@
 using System;
-using System.Text.Json.Serialization;
+
 using NUnit.Framework;
 using Tomlyn.Serialization;
 
@@ -24,7 +24,7 @@ public sealed class NewApiConverterAttributeTests
 
     private sealed class MemberLevelConverterModel
     {
-        [JsonConverter(typeof(UppercaseStringConverter))]
+        [TomlConverter(typeof(UppercaseStringConverter))]
         public string Name { get; set; } = "";
     }
 

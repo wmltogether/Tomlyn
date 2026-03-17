@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using Tomlyn.Helpers;
 using Tomlyn.Model;
 using Tomlyn.Serialization;
@@ -230,12 +230,10 @@ internal static class TomlReflectionTypeInfoResolver
         {
             return true;
         }
-
-        if (member.IsDefined(typeof(JsonIncludeAttribute), inherit: true))
+        if (member.IsDefined(typeof(JsonPropertyAttribute), inherit: true))
         {
             return true;
         }
-
         return false;
     }
 
@@ -245,12 +243,6 @@ internal static class TomlReflectionTypeInfoResolver
         {
             return true;
         }
-
-        if (member.IsDefined(typeof(JsonRequiredAttribute), inherit: true))
-        {
-            return true;
-        }
-
         return false;
     }
 
@@ -260,12 +252,10 @@ internal static class TomlReflectionTypeInfoResolver
         {
             return true;
         }
-
         if (member.IsDefined(typeof(JsonExtensionDataAttribute), inherit: true))
         {
             return true;
         }
-
         return false;
     }
 
@@ -276,13 +266,11 @@ internal static class TomlReflectionTypeInfoResolver
         {
             return CreateConverterFromAttribute(tomlConverter.ConverterType, memberType, options);
         }
-
         var jsonConverter = member.GetCustomAttribute<JsonConverterAttribute>(inherit: true);
-        if (jsonConverter is not null && jsonConverter.ConverterType is not null)
+        if (jsonConverter is not null)
         {
             return CreateConverterFromAttribute(jsonConverter.ConverterType, memberType, options);
         }
-
         return null;
     }
 
@@ -386,13 +374,7 @@ internal static class TomlReflectionTypeInfoResolver
         var jsonIgnore = member.GetCustomAttribute<JsonIgnoreAttribute>(inherit: true);
         if (jsonIgnore is not null)
         {
-            return jsonIgnore.Condition switch
-            {
-                JsonIgnoreCondition.Never => new IgnoreBehavior(IgnoreAlways: false, WriteIgnoreCondition: null),
-                JsonIgnoreCondition.WhenWritingNull => new IgnoreBehavior(IgnoreAlways: false, WriteIgnoreCondition: TomlIgnoreCondition.WhenWritingNull),
-                JsonIgnoreCondition.WhenWritingDefault => new IgnoreBehavior(IgnoreAlways: false, WriteIgnoreCondition: TomlIgnoreCondition.WhenWritingDefault),
-                _ => new IgnoreBehavior(IgnoreAlways: true, WriteIgnoreCondition: null),
-            };
+            return new IgnoreBehavior(IgnoreAlways: true, WriteIgnoreCondition: null);
         }
 
         return new IgnoreBehavior(IgnoreAlways: false, WriteIgnoreCondition: null);
@@ -422,11 +404,10 @@ internal static class TomlReflectionTypeInfoResolver
         {
             return tomlName.Name;
         }
-
-        var jsonName = member.GetCustomAttribute<JsonPropertyNameAttribute>(inherit: true);
+        var jsonName = member.GetCustomAttribute<JsonPropertyAttribute>(inherit: true);
         if (jsonName is not null)
         {
-            return jsonName.Name;
+            return jsonName.PropertyName;
         }
 
         var namingPolicy = options.PropertyNamingPolicy;
@@ -445,13 +426,11 @@ internal static class TomlReflectionTypeInfoResolver
         {
             return tomlOrder.Order;
         }
-
-        var jsonOrder = member.GetCustomAttribute<JsonPropertyOrderAttribute>(inherit: true);
+        var jsonOrder = member.GetCustomAttribute<JsonPropertyAttribute>(inherit: true);
         if (jsonOrder is not null)
         {
             return jsonOrder.Order;
         }
-
         return 0;
     }
 

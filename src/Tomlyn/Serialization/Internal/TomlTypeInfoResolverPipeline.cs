@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using Tomlyn.Helpers;
 using Tomlyn.Serialization;
 
@@ -21,7 +21,8 @@ internal static class TomlTypeInfoResolverPipeline
         "Reflection-based TOML serialization is not compatible with trimming/NativeAOT. " +
         "Use a source-generated TomlSerializerContext or pass a TomlTypeInfo instance.";
 
-    private static readonly ConditionalWeakTable<TomlSerializerOptions, ConcurrentDictionary<Type, TomlTypeInfo>> CacheByOptions = new();
+    private static readonly ConditionalWeakTable<TomlSerializerOptions, ConcurrentDictionary<Type, TomlTypeInfo>>
+        CacheByOptions = new();
 
     [RequiresUnreferencedCode(ReflectionBasedSerializationMessage)]
     [RequiresDynamicCode(ReflectionBasedSerializationMessage)]
@@ -112,7 +113,8 @@ internal static class TomlTypeInfoResolverPipeline
         return new TomlUntypedNullableTypeInfo(type, options, inner);
     }
 
-    private static bool IsNonStringKeyDictionary([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type type)
+    private static bool IsNonStringKeyDictionary(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type type)
     {
         if (type == typeof(string))
         {
@@ -169,29 +171,24 @@ internal static class TomlTypeInfoResolverPipeline
             var converter = CreateConverterFromAttribute(tomlConverterAttribute.ConverterType, type, options);
             return new ConverterTomlTypeInfo(type, options, converter);
         }
-
-        var jsonConverterAttribute = type.GetCustomAttribute<JsonConverterAttribute>(inherit: true);
-        if (jsonConverterAttribute is not null && jsonConverterAttribute.ConverterType is not null)
-        {
-            var converter = CreateConverterFromAttribute(jsonConverterAttribute.ConverterType, type, options);
-            return new ConverterTomlTypeInfo(type, options, converter);
-        }
-
         return null;
     }
 
     [RequiresUnreferencedCode(ReflectionBasedSerializationMessage)]
     [RequiresDynamicCode(ReflectionBasedSerializationMessage)]
-    private static TomlConverter CreateConverterFromAttribute(Type converterType, Type typeToConvert, TomlSerializerOptions options)
+    private static TomlConverter CreateConverterFromAttribute(Type converterType, Type typeToConvert,
+        TomlSerializerOptions options)
     {
         if (!typeof(TomlConverter).IsAssignableFrom(converterType))
         {
-            throw new TomlException($"Converter type '{converterType.FullName}' must derive from '{typeof(TomlConverter).FullName}'.");
+            throw new TomlException(
+                $"Converter type '{converterType.FullName}' must derive from '{typeof(TomlConverter).FullName}'.");
         }
 
         if (converterType.GetConstructor(Type.EmptyTypes) is null)
         {
-            throw new TomlException($"Converter type '{converterType.FullName}' must declare a public parameterless constructor.");
+            throw new TomlException(
+                $"Converter type '{converterType.FullName}' must declare a public parameterless constructor.");
         }
 
         TomlConverter converter;
@@ -214,7 +211,8 @@ internal static class TomlTypeInfoResolverPipeline
 
             if (created is TomlConverterFactory)
             {
-                throw new TomlException($"The converter factory '{factory.GetType().FullName}' returned another {nameof(TomlConverterFactory)}.");
+                throw new TomlException(
+                    $"The converter factory '{factory.GetType().FullName}' returned another {nameof(TomlConverterFactory)}.");
             }
 
             if (!created.CanConvert(typeToConvert))
@@ -260,7 +258,8 @@ internal static class TomlTypeInfoResolverPipeline
 
                 if (created is TomlConverterFactory)
                 {
-                    throw new TomlException($"The converter factory '{factory.GetType().FullName}' returned another {nameof(TomlConverterFactory)}.");
+                    throw new TomlException(
+                        $"The converter factory '{factory.GetType().FullName}' returned another {nameof(TomlConverterFactory)}.");
                 }
 
                 if (!created.CanConvert(type))

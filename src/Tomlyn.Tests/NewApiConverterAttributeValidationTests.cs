@@ -1,5 +1,5 @@
 using System;
-using System.Text.Json.Serialization;
+
 using NUnit.Framework;
 using Tomlyn.Serialization;
 
@@ -17,7 +17,7 @@ public sealed class NewApiConverterAttributeValidationTests
         public int Value { get; set; }
     }
 
-    [JsonConverter(typeof(NotAConverter))]
+    [TomlConverter(typeof(NotAConverter))]
     private sealed class BadJsonConverterType
     {
         public int Value { get; set; }

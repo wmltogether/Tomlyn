@@ -9,7 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text.Json.Serialization;
+
 using Tomlyn.Helpers;
 using Tomlyn.Model;
 using Tomlyn.Serialization.Converters;
@@ -68,15 +68,13 @@ internal sealed class TomlPolymorphicTypeInfo : TomlTypeInfo
         }
 
         var tomlPolymorphicAttribute = type.GetCustomAttribute<TomlPolymorphicAttribute>(inherit: false);
-        var jsonPolymorphicAttribute = type.GetCustomAttribute<JsonPolymorphicAttribute>(inherit: false);
-        if (tomlPolymorphicAttribute is null && jsonPolymorphicAttribute is null)
+        if (tomlPolymorphicAttribute is null)
         {
             return null;
         }
 
         var discriminatorPropertyName =
             tomlPolymorphicAttribute?.TypeDiscriminatorPropertyName ??
-            jsonPolymorphicAttribute?.TypeDiscriminatorPropertyName ??
             options.PolymorphismOptions.TypeDiscriminatorPropertyName;
 
         if (string.IsNullOrEmpty(discriminatorPropertyName))
@@ -100,25 +98,6 @@ internal sealed class TomlPolymorphicTypeInfo : TomlTypeInfo
             }
         }
 
-        foreach (var attr in type.GetCustomAttributes<JsonDerivedTypeAttribute>(inherit: false))
-        {
-            var discriminator = attr.TypeDiscriminator;
-            if (discriminator is null)
-            {
-                SetDefaultDerivedType(type, ref defaultDerivedType, discriminatorByDerived, attr.DerivedType);
-                continue;
-            }
-
-            var discriminatorText = discriminator switch
-            {
-                string s => s,
-                IFormattable f => f.ToString(null, CultureInfo.InvariantCulture),
-                _ => discriminator.ToString() ?? string.Empty,
-            };
-
-            AddDerivedType(type, derivedByDiscriminator, discriminatorByDerived, attr.DerivedType, discriminatorText);
-        }
-
         if (derivedByDiscriminator.Count == 0 && defaultDerivedType is null)
         {
             return null;
@@ -130,14 +109,6 @@ internal sealed class TomlPolymorphicTypeInfo : TomlTypeInfo
             tomlPolymorphicAttribute.UnknownDerivedTypeHandling != TomlUnknownDerivedTypeHandling.Unspecified)
         {
             unknownHandling = tomlPolymorphicAttribute.UnknownDerivedTypeHandling;
-        }
-        else if (jsonPolymorphicAttribute is not null)
-        {
-            unknownHandling = jsonPolymorphicAttribute.UnknownDerivedTypeHandling switch
-            {
-                JsonUnknownDerivedTypeHandling.FallBackToBaseType => TomlUnknownDerivedTypeHandling.FallBackToBaseType,
-                _ => TomlUnknownDerivedTypeHandling.Fail,
-            };
         }
         return new TomlPolymorphicTypeInfo(
             type,

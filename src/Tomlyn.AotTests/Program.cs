@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 using Tomlyn;
 using Tomlyn.Model;
 using Tomlyn.Serialization;
@@ -318,7 +317,7 @@ enabled = true
     }
 }
 
-[TomlSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.SnakeCaseLower)]
+[TomlSourceGenerationOptions(PropertyNamingPolicy = TomlKnownNamingPolicy.SnakeCaseLower)]
 [TomlSerializable(typeof(Program.RootConfig))]
 [TomlSerializable(typeof(TomlTable))]
 internal partial class AotTomlSerializerContext : TomlSerializerContext

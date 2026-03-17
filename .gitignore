@@ -233,3 +233,5 @@ BenchmarkDotNet.Artifacts/
 tomlyn1_0_specs.md
 tomlyn1_0_readiness.md
 tomlyn1_0_checklist.md
+
+**/.idea/*

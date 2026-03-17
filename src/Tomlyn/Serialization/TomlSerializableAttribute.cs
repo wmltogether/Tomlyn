@@ -3,7 +3,6 @@
 // See license.txt file in the project root for full license information.
 
 using System;
-using System.Text.Json.Serialization;
 using Tomlyn.Helpers;
 
 namespace Tomlyn.Serialization;
@@ -40,5 +39,5 @@ public sealed class TomlSerializableAttribute : TomlAttribute
     /// <remarks>
     /// Tomlyn source generation always emits the metadata needed for TOML serialization and deserialization.
     /// </remarks>
-    public JsonSourceGenerationMode GenerationMode { get; set; }
+    public TomlSourceGenerationMode GenerationMode { get; set; }
 }

@@ -91,7 +91,7 @@ By default, `PropertyNamingPolicy` is `null`, meaning CLR member names are used 
 ### Source Generation
 
 ```csharp
-using System.Text.Json.Serialization;
+
 using Tomlyn.Serialization;
 
 public sealed class MyConfig

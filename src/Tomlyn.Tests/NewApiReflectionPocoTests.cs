@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+
 using NUnit.Framework;
 using Tomlyn.Serialization;
 
@@ -57,7 +57,7 @@ public class NewApiReflectionPocoTests
 
     private sealed class JsonNamedPerson
     {
-        [JsonPropertyName("first_name")]
+        [TomlPropertyName("first_name")]
         public string Name { get; set; } = "";
 
         public long Age { get; set; }
@@ -65,13 +65,13 @@ public class NewApiReflectionPocoTests
 
     private sealed class PrivateSetterModel
     {
-        [JsonInclude]
+        [TomlInclude]
         public int Value { get; private set; }
     }
 
     private sealed class IncludedFieldModel
     {
-        [JsonInclude]
+        [TomlInclude]
         public int Value;
     }
 
@@ -97,7 +97,7 @@ public class NewApiReflectionPocoTests
             Value = -1;
         }
 
-        [JsonConstructor]
+        [TomlConstructor]
         public AnnotatedJsonConstructorModel(int value)
         {
             Value = value;
@@ -118,7 +118,7 @@ public class NewApiReflectionPocoTests
 
     private sealed class RequiredModel
     {
-        [JsonRequired]
+        [TomlRequired]
         public int Value { get; set; }
     }
 
@@ -128,7 +128,7 @@ public class NewApiReflectionPocoTests
 
     private sealed class MultipleAnnotatedConstructorsModel
     {
-        [JsonConstructor]
+        [TomlConstructor]
         public MultipleAnnotatedConstructorsModel(int value)
         {
             Value = value;

@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+
 using NUnit.Framework;
 using Tomlyn.Model;
 using Tomlyn.Serialization;
@@ -7,7 +7,7 @@ namespace Tomlyn.Tests;
 
 public sealed class IgnoreConditionModel
 {
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [TomlIgnore(Condition = TomlIgnoreCondition.WhenWritingNull)]
     public string? Optional { get; set; }
 
     [TomlIgnore]
@@ -17,7 +17,7 @@ public sealed class IgnoreConditionModel
     public long DefaultIgnored { get; set; }
 }
 
-[TomlSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
+[TomlSourceGenerationOptions(PropertyNamingPolicy = TomlKnownNamingPolicy.CamelCase)]
 [TomlSerializable(typeof(IgnoreConditionModel))]
 internal partial class TestTomlIgnoreContext : TomlSerializerContext
 {

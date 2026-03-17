@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 using NUnit.Framework;
 using Tomlyn.Model;
 using Tomlyn.Serialization;
@@ -24,7 +23,7 @@ public sealed class DottedKeyDictionaryHolder
     public Dictionary<string, long> Map { get; set; } = new();
 }
 
-[TomlSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
+[TomlSourceGenerationOptions(PropertyNamingPolicy = TomlKnownNamingPolicy.CamelCase)]
 [TomlSerializable(typeof(GeneratedCollectionHolder))]
 [TomlSerializable(typeof(DottedKeyDictionaryHolder))]
 internal partial class TestTomlCollectionsContext : TomlSerializerContext

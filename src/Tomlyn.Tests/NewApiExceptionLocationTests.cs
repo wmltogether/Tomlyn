@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using Tomlyn.Parsing;
 using Tomlyn.Serialization;
-using System.Text.Json.Serialization;
+
 
 namespace Tomlyn.Tests;
 
@@ -113,7 +113,7 @@ public class NewApiExceptionLocationTests
 
     public sealed class MissingRequiredModel
     {
-        [JsonRequired]
+        [TomlRequired]
         public string Name { get; set; } = string.Empty;
     }
 
