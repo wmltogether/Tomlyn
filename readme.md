@@ -8,6 +8,41 @@ Tomlyn is a high-performance .NET [TOML](https://toml.io/en/) 1.1 parser, round-
 
 > **Note**: Tomlyn v1 is a major redesign with breaking changes from earlier versions. It uses a **`System.Text.Json`-style API** with `TomlSerializer`, `TomlSerializerOptions`, and resolver-based metadata (`ITomlTypeInfoResolver`). See the [migration guide](https://xoofx.github.io/Tomlyn/docs/migration) for details.
 
+## 🛟  Unity (tested with 6000.0.59f2)
+
+You can also use Tomlyn 1.x with Unity. 
+
+- Install [NugetForUnity](https://github.com/GlitchEnzo/NuGetForUnity).
+
+- Remove `System.Text.Json` package if exists.
+
+- Add `packages.config` 
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<packages>
+  <package id="System.Collections.Immutable" version="8.0.0" manuallyInstalled="true" />
+  <package id="System.Diagnostics.DiagnosticSource" version="6.0.0" manuallyInstalled="true" />
+  <package id="System.Runtime.CompilerServices.Unsafe" version="6.0.0" />
+</packages>
+```
+
+- Open the Package Manager window by selecting Window > Package Manager, Install UPM package `com.unity.nuget.newtonsoft-json`
+
+- Copy `Unity/Tomlyn/Packages/com.tomlyn-unity` to `Packages`.
+
+## 🤡 Unity limitations
+
+- `{get; init;}` is not supported, Use `{get; set;}` instead.
+
+- Replaced `System.Text.Json` with `Newtonsoft.Json` because Unity does not support versions later than 6.0.0-preview.
+
+- `JsonConverter` is not supported, Use `TomlConverter` instead.
+
+- Only the following JSON attributes are supported: `JsonProperty`, `JsonObject`, and `JsonIgnore`.
+
+
+
 ## ✨ Features
 
 - **`System.Text.Json`-style API**: familiar surface with `TomlSerializer`, `TomlSerializerOptions`, `TomlTypeInfo<T>`
