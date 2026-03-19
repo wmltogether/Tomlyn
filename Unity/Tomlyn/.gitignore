@@ -2,6 +2,7 @@
 *.slnx
 *.csproj
 *.unitypackage
+!*.meta
 
 Temp/
 UserSettings/
