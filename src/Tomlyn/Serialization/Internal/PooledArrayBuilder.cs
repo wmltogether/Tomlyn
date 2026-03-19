@@ -97,7 +97,7 @@ internal struct PooledArrayBuilder<T> : IDisposable
             return;
         }
 
-#if NETSTANDARD2_0
+#if (NETSTANDARD2_0 || NET_STANDARD || NET_STANDARD_2_1)
         Array.Clear(buffer, 0, Math.Min(count, buffer.Length));
 #else
         if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())

@@ -2,7 +2,7 @@
 // Licensed under the BSD-Clause 2 license.
 // See license.txt file in the project root for full license information.
 
-#if NETSTANDARD2_0
+#if (NETSTANDARD2_0 || NET_STANDARD || NET_STANDARD_2_1)
 // ReSharper disable once CheckNamespace
 namespace System.Diagnostics.CodeAnalysis
 {

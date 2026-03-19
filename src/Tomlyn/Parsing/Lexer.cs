@@ -1060,7 +1060,7 @@ namespace Tomlyn.Parsing
 
         private bool TryParseDecimalDouble(out double value)
         {
-#if NETSTANDARD2_0
+#if (NETSTANDARD2_0 || NET_STANDARD || NET_STANDARD_2_1)
             var numberAsText = _textBuilder.ToString();
             return double.TryParse(numberAsText, NumberStyles.Float, CultureInfo.InvariantCulture, out value);
 #else

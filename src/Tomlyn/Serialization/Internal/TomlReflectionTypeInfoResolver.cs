@@ -120,7 +120,7 @@ internal static class TomlReflectionTypeInfoResolver
         }
 
         // Note: Type.IsByRefLike is not available on netstandard2.0.
-#if NETSTANDARD2_0
+#if (NETSTANDARD2_0 || NET_STANDARD || NET_STANDARD_2_1)
         return type.IsClass || type.IsValueType;
 #else
         return type.IsClass || (type.IsValueType && !type.IsByRefLike);

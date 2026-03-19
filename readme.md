@@ -10,7 +10,7 @@ Tomlyn is a high-performance .NET [TOML](https://toml.io/en/) 1.1 parser, round-
 
 ## 🛟  Unity (tested with 6000.0.59f2)
 
-You can also use Tomlyn 1.x with Unity. 
+You can also use Tomlyn 2.x with Unity. 
 
 - Install [NugetForUnity](https://github.com/GlitchEnzo/NuGetForUnity).
 

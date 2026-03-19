@@ -112,7 +112,7 @@ public sealed class TomlConverterAttribute : TomlAttribute
     /// Initializes a new instance of the <see cref="TomlConverterAttribute"/> class.
     /// </summary>
     /// <param name="converterType">The converter type.</param>
-#if NETSTANDARD2_0
+#if NETSTANDARD2_0 || NET_STANDARD || NET_STANDARD_2_1
     public TomlConverterAttribute(Type converterType)
 #else
     public TomlConverterAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] Type converterType)
@@ -125,7 +125,7 @@ public sealed class TomlConverterAttribute : TomlAttribute
     /// <summary>
     /// Gets the converter type.
     /// </summary>
-#if !NETSTANDARD2_0
+#if !(NETSTANDARD2_0 || NET_STANDARD || NET_STANDARD_2_1)
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
 #endif
     public Type ConverterType { get; }
